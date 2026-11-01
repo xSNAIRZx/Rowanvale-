@@ -6,7 +6,7 @@ const fs = require("fs"),
 const BASE = process.env.ROWANVALE_TEST_URL || "http://localhost:8188",
   ROOT = path.resolve(__dirname, ".."),
   K = "mindforge.momentum.data",
-  OUT = path.join(ROOT, "docs/evidence/18.6.2");
+  OUT = path.join(ROOT, "docs/evidence/19.0.0");
 (async () => {
   const b = await chromium.launch({
       executablePath: process.env.ROWANVALE_BROWSER || undefined,
@@ -55,9 +55,9 @@ const BASE = process.env.ROWANVALE_TEST_URL || "http://localhost:8188",
   assert.equal(await p.title(), "STALE ROWANVALE SHELL");
   await c.unroute("**/sw.js");
   await p.goto(BASE + "/api/launch");
-  await p.waitForURL("**/index.html?build=18.6.2");
+  await p.waitForURL("**/index.html?build=19.0.0");
   await p.waitForFunction(() => document.body.classList.contains("signed-in"));
-  assert.match(await p.title(), /18\.6\.2/);
+  assert.match(await p.title(), /19\.0\.0/);
   assert.equal(
     await p.evaluate((k) => JSON.parse(localStorage.getItem(k)).profile.bio, K),
     "KEEP MY EXISTING BIO",
@@ -86,7 +86,7 @@ const BASE = process.env.ROWANVALE_TEST_URL || "http://localhost:8188",
     ),
   );
   console.log(
-    "PASS stale-shell upgrade preserves saved workspace and opens 18.6.2",
+    "PASS stale-shell upgrade preserves saved workspace and opens 19.0.0",
   );
   await c.close();
   await b.close();

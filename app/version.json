@@ -1,15 +1,14 @@
 {
-  "version": "18.6.2",
-  "channel": "release-candidate",
-  "name": "Rowanvale 18.6.2 — Everyday Polish",
+  "version": "19.0.0",
+  "channel": "beta",
+  "name": "Rowanvale Beta 19.0 — Your World, Together",
   "released": "2026-11-01",
-  "releaseNotes": "Pre-release: safer local saves, calmer effects, clearer media shelves, reliable guest voting and recoverable focus sessions.",
+  "releaseNotes": "Beta19 brings coordinated workspace presets, smart media shelves, flexible library views, collaborative night planning and honest offline Data Health.",
   "changes": [
-    "Protect newer changes from another tab when storage fails",
-    "Reject damaged artwork backups before offering an unrestorable download",
-    "Calm View covers modern atmosphere effects",
-    "Clear media shelves and recoverable empty search results",
-    "Keep the selected movie-night guest while editing a plan",
-    "Preserve Quiet Room duration and retry a completed session after a failed save"
+    "Save, compare and share private-data-free workspace presets",
+    "Smart Shelves update automatically from saved filters",
+    "Grid, list and compact library views persist locally",
+    "Review a vote-based lineup that fits your night, then export a calendar event",
+    "Inspect actual offline installation, storage and backup status"
   ]
 }

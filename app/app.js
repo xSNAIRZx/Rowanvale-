@@ -1,6 +1,6 @@
 (() => {
 'use strict';
-const APP_VERSION = '18.6.2';
+const APP_VERSION = '19.0.0';
 window.ROWANVALE_VERSION=APP_VERSION;
 const PROFILE_KEY='vytron.device.profile';
 let deviceProfile=null;
@@ -1432,7 +1432,7 @@ function render(){
  RV171.afterRender(currentView,$('#viewRoot'),data,save,render,go,toast);
  RV172.afterRender(currentView,$('#viewRoot'),data,save,render,go,toast,restorePortableWorkspace);
  }else{const root=$('#viewRoot');for(const key of ['--accent','--rv162-page-accent','--rv162-widget-gap'])root.style.removeProperty(key);root.removeAttribute('data-rv162-backdrop');RV18.mount();}
- RV18.afterPage(currentView,$('#viewRoot'),data);if(currentView==='watch')RVWatch.mount();if(currentView==='fan')RVFan.mount();if(currentView==='books')RVMedia.mount();RVLiving.mount();RVProfile.mount();RVReset.mount();RVExperience.mount(currentView,data);RVConnect.start();RVCovers.mount();
+ RV18.afterPage(currentView,$('#viewRoot'),data);if(currentView==='watch')RVWatch.mount();if(currentView==='fan')RVFan.mount();if(currentView==='books')RVMedia.mount();RVLiving.mount();RVProfile.mount();RVReset.mount();RVExperience.mount(currentView,data);RVConnect.start();RVCovers.mount();if(currentView==='safety')RVHealth.mount($('#viewRoot'),data,{loadIssue:storageLoadIssue});
  applyHelpfulHints($('#viewRoot'),currentView==='discover');
  if(currentView==='focus') updateTimerUI();
  if(currentView==='customize') { const cfg=getAccountConfig(); if($('#supabaseUrl')) $('#supabaseUrl').value=cfg.url||''; if($('#supabaseKey')) $('#supabaseKey').value=cfg.key||''; if($('#accountEmail') && cloudUser) $('#accountEmail').value=cloudUser.email||''; }

@@ -5,7 +5,7 @@ const fs = require("fs"),
   { chromium } = require("./browser-runtime.cjs");
 const BASE = process.env.ROWANVALE_TEST_URL || "http://localhost:8185",
   ROOT = path.resolve(__dirname, ".."),
-  OUT = path.join(ROOT, "docs/evidence/18.6.2"),
+  OUT = path.join(ROOT, "docs/evidence/19.0.0"),
   K = "mindforge.momentum.data";
 fs.mkdirSync(OUT, { recursive: true });
 (async () => {

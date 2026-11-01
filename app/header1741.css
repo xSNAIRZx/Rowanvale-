@@ -17,3 +17,5 @@ body.signed-in #appSidebar .rv-rail-tools [data-action="open-command"]{display:n
 @media(max-width:760px){body.signed-in .topbar .topbar-leading{display:none!important}body.signed-in #commandLaunch{display:flex!important}body.signed-in #shellAccountToggle{padding:0 10px!important;font-size:11px!important}}
 body.signed-in #shellAccountMenu #hb12UndoButton::before{display:none!important}
 body.signed-in #shellAccountMenu #hb12UndoButton{gap:8px!important}
+/* Phones navigate with the bottom bar and its complete More portal. */
+@media(max-width:760px){body.signed-in .hb12-wayfinder{display:none!important}}

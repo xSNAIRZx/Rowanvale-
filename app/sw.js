@@ -1,8 +1,9 @@
 /* Rowanvale 15 mobile service worker.
    App-shell cache is versioned. New worker installs a fresh cache; old caches are
    removed only after activation. API/version checks bypass cache. */
-const CACHE_NAME = 'hearthbyte-play-connect-reset-v18.6.2-rowanvale';
+const CACHE_NAME = 'hearthbyte-play-connect-reset-v19.0.0-rowanvale';
 const APP_SHELL = [
+  './library19.js', './night19.js', './health19.js', './health19.css',
   './',
   './index.html', './covers1861.js', './covers1861.css',
   './title-index186.js','./experience186.css','./experience186.js','./profile-layout186.js','./artwork-queue186.js','./reset-core186.js','./reset186.js',
@@ -52,6 +53,8 @@ self.addEventListener('activate', event => {
   event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => (key.startsWith('mindforge-momentum-') || key.startsWith('vytron-') || key.startsWith('hearthbyte-play-connect-reset-')) && key !== CACHE_NAME).map(key => caches.delete(key)))).then(() => self.clients.claim()));
 });
 self.addEventListener('message', event => {
+  if(event.data?.type==='ROWANVALE_HEALTH_CHECK'&&event.ports[0])event.waitUntil((async()=>{const cache=await caches.open(CACHE_NAME);const present=await Promise.all(APP_SHELL.map(url=>cache.match(url)));event.ports[0].postMessage({type:'ROWANVALE_HEALTH_RESULT',cacheName:CACHE_NAME,total:APP_SHELL.length,missing:APP_SHELL.filter((_,i)=>!present[i])});})().catch(()=>event.ports[0].postMessage({type:'ROWANVALE_HEALTH_RESULT',cacheName:CACHE_NAME,total:APP_SHELL.length,missing:APP_SHELL})));
+
   if (event.data && event.data.type === 'SKIP_WAITING') self.skipWaiting();
 });
 self.addEventListener('fetch', event => {

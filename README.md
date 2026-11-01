@@ -1,42 +1,39 @@
-# Rowanvale 18.6.2 — Everyday Polish
+# Rowanvale Beta 19.0 — Your World, Together
 
-> **PRE-RELEASE / release candidate.** For testing and feedback. This is not a stable release.
+> **BETA / PRE-RELEASE — 19.0.0.** This build is for testing and feedback, not a stable release.
 
-A reliability and usability pass on the latest Rowanvale: calmer effects, mobile Settings that stay usable while scrolling, clearer games/media shelves, correct movie-night guest voting, safer cross-tab saves and recoverable Quiet Room sessions. Existing artwork, profiles, local directories and data formats are preserved.
+A more personal, organized and useful local home for games, films, television, anime and books. Built on 18.6.2, preserving its repairs, profiles, artwork, directories and saved data.
 
-## Start or upgrade
+## New in Beta 19
 
-1. In the previous app, export a JSON backup from Backups & Data; optionally export artwork too.
-2. Stop the previous Rowanvale server. Keep its folder as a rollback copy.
-3. Extract the entire new ZIP and double-click `START_ROWANVALE_WINDOWS.bat`. Node.js is required; no dependency installation is needed to use the app.
-4. Use the same browser profile and `http://localhost:8080/api/launch`. Confirm **18.6.2**. Saved browser data remains associated with this address.
+- **Workspace presets:** coordinated Quiet focus, Play & discover and Evening unwind setups; save up to 12 of your own. Compare saved versus draft appearance before committing. Share validated visual/layout preferences without identity, uploaded media or private records.
+- **Smart Shelves:** save up to 20 named searches with format, status and sort. Matching titles join automatically as your library changes. Rename/remove a shelf without deleting stories.
+- **Library views:** cover grid, detailed list and compact list, remembered across visits and included in backups. Planned games stay on For later after reload.
+- **Night planning:** review a vote-based lineup that fits known durations and breaks; No votes are excluded and missing votes remain visible. Accept explicitly, then export a calendar file without guest identities or individual ballots.
+- **Data Health:** inspect real saved-workspace readability, browser storage estimates, active-worker offline cache verification, and clearly labeled backup-download records.
 
-Do not open index.html directly or clear browser storage to upgrade. If moving computers or browser profiles, import your exported backup. Local guest labels and shared night plans do not become hosted accounts; hosted social remains a separate future feature.
+Every feature above works locally. First-time external artwork/metadata and optional cloud services still require a network. Night plans remain local/manual sharing; this is not hosted friend accounts or synchronized streaming.
 
-## What's improved
+## Launch or upgrade
 
-- Calm View suppresses the newer atmosphere effects and is available in Comfort settings.
-- Mobile Edit settings / Show preview tabs stay below the header.
-- Games & Media and Books Directory can be chosen as the starting page.
-- Current stories, future plans and favorites have count-bearing shelf shortcuts; paused items have a precise filter. Empty searches offer Clear filters.
-- Editing a movie-night lineup or duration preserves the selected voting guest.
-- Failed saves cannot roll back to a stale copy from before another tab's changes.
-- Artwork backup export catches damaged image files before offering an archive that cannot be restored.
-- Quiet Room remembers the selected duration and paused/completed state. A completed session that cannot save offers Retry saving session, including after reload in the same tab.
-- Downloaded issue reports identify the running version correctly.
+1. Export a JSON backup from the old app; optionally export artwork too.
+2. Stop the previous server and retain its folder.
+3. Extract the full ZIP and run **START_ROWANVALE_WINDOWS.bat**. Node.js is required; no npm install is needed to run Rowanvale.
+4. Use the same browser profile at **http://localhost:8080/api/launch**. Confirm **19.0.0 / Beta**.
 
-## Evidence and source
+Do not open index.html directly or clear browser storage. Moving browsers/computers requires importing your backup. The old release is preserved for rollback.
 
-- [Audit, fixes, QA and remaining risks](docs/AUDIT_AND_QA_18.6.2.md)
-- [Media product research](docs/MEDIA_POLISH_AUDIT.md)
-- `docs/evidence/18.6.2/` — current full regression results
-- `docs/evidence/audit-controls/` and `docs/evidence/audit-polish/` — targeted checks, control inventory and genuine before/after screenshots
-- `BUILD_MANIFEST.json` — release file checksums
+## Guides
 
-Earlier version reports are historical. An inventory of buttons is not proof every possible state or external integration has passed.
+- [What changed, what is still missing, and the next priorities](docs/BETA_19_PRODUCT_DIRECTION.md)
+- [Verification and limitations](docs/QA_BETA_19.md)
+- [Smart Shelves and library views](docs/LIBRARY_19.md)
+- [Data Health semantics and performance observations](docs/DATA_HEALTH_19.md)
+- `docs/evidence/19.0.0/` contains actual browser captures and machine-readable results.
+- `BUILD_MANIFEST.json` in the release lists per-file SHA-256 checksums.
+
+Older reports describe their own releases. No claim is made that every legacy control, device or external integration is certified.
 
 ## Development
 
-Plain JavaScript/CSS and a local Node server, with no new runtime dependencies. `npm ci` installs pinned development tools. Run `npm run check`, `npm test`, `npm run test:browser`, `npm run format:check`, and `npm run catalog:audit`. Browser checks use isolated temporary data; set `ROWANVALE_BROWSER` to Chrome or install Playwright Chromium. `npm run build` creates the distribution; `npm run test:live-covers` separately exercises public providers.
-
-No personal workspace, account secrets, node_modules or private artwork cache is bundled.
+Plain JavaScript/CSS, local Node server, no new runtime dependency. `npm ci` installs pinned development tools. `npm run check`, `npm run test:browser`, `npm run format:check`, `npm run catalog:audit`, and `npm run build` validate and package the app. Set ROWANVALE_BROWSER to Chrome or install Playwright Chromium for browser tests. Tests use synthetic workspaces and temporary server data, never your real browser profile.

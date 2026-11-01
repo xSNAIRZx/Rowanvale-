@@ -46,5 +46,5 @@ test("the fresh-build launch page bypasses the old shell without clearing saved 
   assert.ok(s.includes("</script>"));
   assert.match(s, /reg\.unregister/);
   assert.ok(!/localStorage\.clear|caches\.delete/.test(s));
-  assert.match(s, /build=18\.6\.2/);
+  assert.match(s, /build=19\.0\.0/);
 });

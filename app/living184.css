@@ -3,9 +3,28 @@
 @media(prefers-reduced-motion:reduce){.living184 *,.living-dialog *{scroll-behavior:auto;animation:none!important;transition:none!important}}
 
 .living-dialog [hidden],.living184 [hidden]{display:none!important}
+/* Beta 19 library: saved queries and readable density choices share one toolbar. */
+.living-library-tools{display:flex;align-items:end;gap:14px;flex-wrap:wrap;margin-top:18px}.living-library-tools>label{flex:1;min-width:180px}.living-library-tools .living-actions{margin:0;align-self:end}.living-shelf-hint{font-size:12px;margin:10px 0 20px}.living-smart-manager article{display:grid;gap:8px;padding:16px 0;border-bottom:1px solid var(--living-line)}.living-smart-manager small{overflow-wrap:anywhere}.living-grid.living-density-list,.living-grid.living-density-compact{grid-template-columns:1fr;gap:10px}.living-density-list .living-card,.living-density-compact .living-card{display:grid;grid-template-columns:110px minmax(0,1fr);align-items:stretch}.living-density-list .living-cover{aspect-ratio:auto;min-height:165px}.living-density-list .living-card-body{padding:14px 18px}.living-density-list .living-card-body h2{margin:4px 0}.living-density-list .living-card-body>.living-actions{padding-top:8px}.living-density-compact .living-card{grid-template-columns:62px minmax(0,1fr)}.living-density-compact .living-cover{aspect-ratio:auto;min-height:95px}.living-density-compact .living-cover>span{font-size:24px}.living-density-compact .living-cover small{display:none}.living-density-compact .living-card-body{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px 14px;padding:10px 14px}.living-density-compact .living-card-top{grid-column:1/-1}.living-density-compact .living-card-body h2{font-size:16px;margin:0}.living-density-compact .living-card-body>p{grid-column:1;margin:0;font-size:11px}.living-density-compact .living-card-body>.living-actions{grid-column:2;grid-row:2/5;align-self:center;padding:0;gap:5px}.living-density-compact .living-card-body>progress{grid-column:1;margin:4px 0}.living-density-compact .living-card-body>small{grid-column:1;font-size:10px}.living-density-compact .living-card-top button{padding:3px 8px}.living184 .living-hero{padding:26px 32px}.living184 .living-hero h1{font-size:clamp(30px,3.3vw,48px);line-height:1.13}.living184 .living-hero p{margin:12px 0}.living184 .living-orbit>span{font-size:64px}
+@media(max-width:650px){.living-library-tools{gap:10px}.living-library-tools>label{min-width:130px}.living-library-tools>.living-actions{order:3;width:100%}.living-density-list .living-card{grid-template-columns:78px minmax(0,1fr)}.living-density-list .living-card-body{padding:12px}.living-density-compact .living-card-body{display:flex;gap:3px;padding:10px}.living-density-compact .living-card-body>.living-actions{padding-top:8px;align-self:stretch}.living-density-compact .living-card-top{width:100%}.living184 .living-hero{padding:22px}.living184 .living-hero h1{font-size:32px}}
 .living-shelves{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0 0 24px}.living-shelves .button{display:flex;flex-direction:column;align-items:flex-start;gap:5px;white-space:normal;text-align:left;padding:18px;border:1px solid var(--living-line);background:var(--living-soft);border-radius:14px;color:inherit}.living-shelves strong{font-size:27px;line-height:1.2;color:var(--accent,#d2ac7b)}.living-shelves span{font-size:12px;line-height:1.4}.living-shelves [aria-pressed=true]{border-color:var(--accent,#d2ac7b);box-shadow:inset 0 0 0 1px var(--accent,#d2ac7b)}@media(max-width:700px){.living-shelves{grid-template-columns:repeat(2,minmax(0,1fr))}.living-shelves .button{padding:14px}}
 /* Preserve legibility when the inherited shell switches to its light palette. */
 body.signed-in[data-appearance-resolved] .living-tabs button[aria-current="page"]{background:var(--accent,#d6a578)!important;color:var(--hb12-onaccent,#17282b)!important;border-color:var(--accent,#d6a578)!important}
 body.signed-in[data-appearance-resolved="light"] :is(#shellAccountToggle,#focusModeToggle,.hb11-context-tools button,.toast){background:var(--hb12-raised,#e6ece3)!important;color:var(--hb12-text,#203a35)!important;border-color:var(--hb12-border,#98ac9c)!important}
 body.signed-in[data-appearance-resolved="light"] .hb11-context-tools b{color:var(--hb12-text,#203a35)!important}
 body.signed-in[data-appearance-resolved="light"] .living-dialog{background:var(--hb12-surface,#fffefa);color:var(--hb12-text,#203a35)}
+/* Phone library: get to shelves and search sooner, with every action retained. */
+@media(max-width:760px){
+ .living184 .living-hero{padding:16px;gap:0;grid-template-columns:minmax(0,1fr);border-radius:18px}
+ .living184 .living-orbit{display:none}
+ .living184 .living-hero .eyebrow{font-size:9px;letter-spacing:.08em}
+ .living184 .living-hero h1{font-size:27px;line-height:1.12;margin:8px 0}
+ .living184 .living-hero p{font-size:13px;line-height:1.5;margin:8px 0}
+ .living184 .living-hero .living-actions{gap:6px;margin-top:12px}
+ .living184 .living-hero .button{font-size:11px;padding:8px 9px;min-height:44px}
+ .living184 .living-tabs{padding:12px 0;margin-bottom:16px}
+ .living184 .living-shelves{gap:8px;margin-bottom:16px}
+ .living184 .living-shelves .button{padding:10px;flex-direction:row;align-items:center;gap:8px;min-height:58px}
+ .living184 .living-shelves strong{font-size:20px}
+ .living184 .living-shelves span{font-size:11px}
+}
+@media(max-width:760px){body.signed-in #viewRoot .living184 .living-hero .button{min-height:44px!important}}

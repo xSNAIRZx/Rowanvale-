@@ -282,7 +282,7 @@
             return emit("synced", "Your private cloud copy is current.");
           const payload = {
             schemaVersion: getData().schemaVersion,
-            appVersion: "18.6.2",
+            appVersion: "19.0.0",
             data: structuredClone(getData()),
             updatedAt: new Date(now()).toISOString(),
           };

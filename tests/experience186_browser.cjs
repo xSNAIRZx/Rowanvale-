@@ -4,7 +4,7 @@ const fs = require("fs"),
   assert = require("node:assert/strict"),
   { chromium } = require("./browser-runtime.cjs");
 const ROOT = path.resolve(__dirname, ".."),
-  OUT = path.join(ROOT, "docs/evidence/18.6.2"),
+  OUT = path.join(ROOT, "docs/evidence/19.0.0"),
   BASE = process.env.ROWANVALE_TEST_URL || "http://localhost:8186",
   K = "mindforge.momentum.data";
 fs.mkdirSync(OUT, { recursive: true });
@@ -127,7 +127,7 @@ fs.mkdirSync(OUT, { recursive: true });
   for (const [id, label] of Object.entries(routes))
     await check("Route and title: " + label, async () => {
       await nav(id);
-      assert.equal(await page.title(), label + " · Rowanvale 18.6.2");
+      assert.equal(await page.title(), label + " · Rowanvale 19.0.0");
       assert.equal(
         await page
           .locator('.nav-item[data-view="' + id + '"] .nav-label')
@@ -417,7 +417,11 @@ fs.mkdirSync(OUT, { recursive: true });
     );
   await context.close();
   context = await browser.newContext({
-    viewport: { width: 1440, height: 1000 },
+    // This fixture tests visible-title priority, not a fixed library-header height.
+    // Smart Shelf controls add space above the grid in Beta 19. Keep the first
+    // card inside the viewport; otherwise auto-featured book 0 correctly wins
+    // over nearby (off-screen) book 40.
+    viewport: { width: 1440, height: 1600 },
     serviceWorkers: "block",
   });
   page = await context.newPage();
@@ -491,6 +495,18 @@ fs.mkdirSync(OUT, { recursive: true });
   await check(
     "Visible artwork starts before slow probes and despite an exhausted bulk budget",
     async () => {
+      assert.ok(
+        await page.locator('[data-item="priority-40"]').evaluate((el) => {
+          const r = el.getBoundingClientRect();
+          return (
+            r.top < innerHeight &&
+            r.bottom > 0 &&
+            r.left < innerWidth &&
+            r.right > 0
+          );
+        }),
+        "Priority book 40 must actually be visible for this queue-priority fixture",
+      );
       await page.waitForFunction(
         () => RVConnect.snapshot().artwork.firstRequestMs !== null,
         {},

@@ -66,7 +66,9 @@ const RV161=(()=>{
   }
   if(view==='backlog'){const list=root.querySelector('.hb10-library-manager');if(list){const bar=document.createElement('div');bar.className='rv161-library-helper';bar.innerHTML='<span>Can’t decide what to play?</span><button type="button" class="button button-quiet" data-action="rv161-library-pick">Pick from my unfinished games</button><span id="rv161LibraryPick" role="status"></span>';list.before(bar)}}
   // A small, closed-by-default outline keeps long sections navigable by keyboard.
-  const headings=[...root.querySelectorAll('h2')].filter(h=>!h.closest('.rv16-route-tools,.hb11-context-tools') && h.textContent.trim());
+  root.querySelectorAll('.rv161-page-outline').forEach(el=>el.remove());pageOutlineCount=0;
+  // Individual library cards are items, not page sections; hidden panels are not destinations.
+  const headings=[...root.querySelectorAll('h2')].filter(h=>!h.closest('.rv16-route-tools,.hb11-context-tools,.living-card,.game-card,.watch-card,.fan-card,.media-book-card,[hidden],dialog') && h.textContent.trim());
   const candidate=headings.slice(0,30);if(candidate.length<2)return;
   const details=document.createElement('details');details.className='rv161-page-outline';details.innerHTML='<summary>On this page <span class="rv161-outline-count"></span><span class="rv161-outline-chev" aria-hidden="true">⌄</span></summary><nav aria-label="Jump to a section"></nav>';
   details.querySelector('.rv161-outline-count').textContent=`${candidate.length} sections`;
