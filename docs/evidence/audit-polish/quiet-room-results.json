@@ -1,0 +1,21 @@
+{
+  "date": "2026-11-01T09:56:06.654Z",
+  "results": [
+    {
+      "name": "Quiet Room duration survives reload before starting",
+      "pass": true
+    },
+    {
+      "name": "Paused Quiet Room countdown survives reload",
+      "pass": true
+    },
+    {
+      "name": "Finished timer retains retry state after quota failure and reload",
+      "pass": true
+    },
+    {
+      "name": "Saved completion remains complete after reload without duplicate log or XP",
+      "pass": true
+    }
+  ]
+}

@@ -22,3 +22,6 @@ docs/evidence/18.6/*failure*.png
 /live-ui1861.cjs
 /test-latest.log
 docs/evidence/18.6.1/*failure*.png
+
+/*-test.log
+docs/evidence/18.6.2/*failure*.png

@@ -1,7 +1,7 @@
 @echo off
 setlocal
 cd /d "%~dp0app"
-title Rowanvale 18.6.1 - Automatic Covers Fix
+title Rowanvale 18.6.2 - Everyday Polish Pre-release
 where node >nul 2>nul
 if errorlevel 1 (
  echo.

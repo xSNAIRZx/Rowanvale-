@@ -1,6 +1,6 @@
 (() => {
 'use strict';
-const APP_VERSION = '18.6.1';
+const APP_VERSION = '18.6.2';
 window.ROWANVALE_VERSION=APP_VERSION;
 const PROFILE_KEY='vytron.device.profile';
 let deviceProfile=null;
@@ -1485,29 +1485,37 @@ function toggleQuest(id){
  },'');
  if(ok)toast(message,'success');
 }
-function checkAchievements(){
+function checkAchievements(notify=true){
  const all=[{id:'first-quest',name:'First Spark',desc:'Complete your first quest.',test:()=>data.quests.some(q=>q.completed)},{id:'focus-60',name:'Quiet Momentum',desc:'Log 60 total focus minutes.',test:()=>data.focusLog.reduce((n,x)=>n+x.minutes,0)>=60},{id:'quest-10',name:'Quest Crafter',desc:'Complete 10 quests.',test:()=>data.quests.filter(q=>q.completed).length>=10},{id:'backlog-5',name:'Curiosity Collector',desc:'Save 5 things to your backlog.',test:()=>data.backlog.length>=5},{id:'quest-25',name:'Chapter Finisher',desc:'Complete 25 quests.',test:()=>data.quests.filter(q=>q.completed).length>=25},{id:'level-5',name:'Rising Spark',desc:'Reach level 5.',test:()=>levelFor(data.xp)>=5},{id:'level-10',name:'Solar Flare',desc:'Reach level 10.',test:()=>levelFor(data.xp)>=10},{id:'play-10',name:'World Wanderer',desc:'Log 10 game sessions.',test:()=>data.playLog.length>=10},{id:'movement-5',name:'Motion Maker',desc:'Log 5 movement sessions.',test:()=>data.fitnessLogs.length>=5}];
- for(const a of all)if(a.test()&&!data.achievements.some(x=>x.id===a.id)){data.achievements.push({id:a.id,name:a.name,desc:a.desc,date:new Date().toISOString()});toast(`Achievement unlocked: ${a.name}`,'success')}
+ for(const a of all)if(a.test()&&!data.achievements.some(x=>x.id===a.id)){data.achievements.push({id:a.id,name:a.name,desc:a.desc,date:new Date().toISOString()});if(notify)toast(`Achievement unlocked: ${a.name}`,'success')}
 }
 function deleteQuest(id){const q=data.quests.find(x=>x.id===id);if(!q)return;if(!confirm(`Delete “${q.title}”? Earned XP will stay with you.`))return;rv26CommitChange(()=>{hb12Remember('quests','Deleted quest');data.quests=data.quests.filter(x=>x.id!==id)},'Quest deleted.')}
+let pendingFocusCompletion=null;
 function startTimer(){
+ if(pendingFocusCompletion){completeTimer();return}
  if(running){running=false;remaining=Math.max(0,Math.ceil((endAt-Date.now())/1000));clearInterval(focusTimer);focusTimer=null;saveTimerState();updateTimerUI();return}
  if(remaining<=0)remaining=duration*60;
  running=true;endAt=Date.now()+remaining*1000;sessionStartedAt=Date.now();focusTimer=setInterval(tick,250);saveTimerState();updateTimerUI();
 }
-function saveTimerState(){try{sessionStorage.setItem('mindforge.timer',JSON.stringify({remaining,running,endAt,duration,focusKind}))}catch{}}
+function saveTimerState(){try{sessionStorage.setItem('mindforge.timer',JSON.stringify({remaining,running,endAt,duration,focusKind,pendingFocusCompletion}))}catch{}}
 function tick(){if(!running)return;remaining=Math.max(0,Math.ceil((endAt-Date.now())/1000));updateTimerUI();if(remaining<=0)completeTimer()}
 function completeTimer(){
  clearInterval(focusTimer);focusTimer=null;running=false;remaining=0;
- const mins=duration;data.focusLog.unshift({id:uid(),date:new Date().toISOString(),minutes:mins,kind:focusKind});awardXP(Math.max(5,Math.round(mins/5)*5),`${focusKind} · ${mins} min`,`focus:${data.focusLog[0].id}`,'Focus');checkAchievements();if(!save())return false;saveTimerState();updateTimerUI();
+ const entry=pendingFocusCompletion||{id:uid(),date:new Date().toISOString(),minutes:duration,kind:focusKind};pendingFocusCompletion=entry;saveTimerState();
+ const mins=entry.minutes;
+ if(!data.focusLog.some(x=>x.id===entry.id)){
+  data.focusLog.unshift(entry);awardXP(Math.max(5,Math.round(mins/5)*5),`${entry.kind} · ${mins} min`,`focus:${entry.id}`,'Focus');checkAchievements(false);
+  if(!save()){updateTimerUI();return false}
+ }
+ pendingFocusCompletion=null;saveTimerState();updateTimerUI();
  toast(`${focusKind} complete · +${Math.max(5,Math.round(mins/5)*5)} XP. Take a breath if that would help.`,'success');
  if(data.settings.breakReminder) setTimeout(()=>{if(confirm('You completed a focus session. Would a short break feel good?'))toast('Break idea: stand up, sip water, or look away from the screen.');},250);
 }
 function updateTimerUI(){
  const display=$('#timerDisplay');if(display)display.textContent=minutes(remaining);
- const status=$('#timerStatus');if(status)status.textContent=running?'IN PROGRESS':remaining===0?'SESSION COMPLETE':'READY WHEN YOU ARE';
+ const status=$('#timerStatus');if(status)status.textContent=pendingFocusCompletion?'FINISHED · SAVE NEEDED':running?'IN PROGRESS':remaining===0?'SESSION COMPLETE':'READY WHEN YOU ARE';
  const ring=$('#timerRing');if(ring)ring.style.setProperty('--timer-progress',`${Math.max(0,Math.min(100,(1-remaining/(duration*60))*100))}%`);
- const start=$('#timerStart');if(start)start.textContent=running?'Ⅱ Pause':'▶ Start focus';
+ const start=$('#timerStart');if(start)start.textContent=pendingFocusCompletion?'Retry saving session':running?'Ⅱ Pause':'▶ Start focus';
  const mode=$('#timerModeLabel');if(mode)mode.textContent=focusKind.toUpperCase()+' SESSION';
  const mini=$('#miniTimer');if(mini)mini.textContent=minutes(remaining);
 }
@@ -1523,9 +1531,9 @@ function toggleBreathing(){
  breathingTimer=setInterval(()=>{const rem=Math.max(0,Math.ceil((breathingDeadline-Date.now())/1000));const label=$('#breathTimeLabel');if(label)label.textContent=`${rem}s remaining · breathe comfortably`;if(rem<=0){breathingActive=false;clearInterval(breathingTimer);clearInterval(breathingPhaseTimer);breathingTimer=null;breathingPhaseTimer=null;data.wellnessSessions=data.wellnessSessions||[];data.wellnessSessions.unshift({id:uid(),title:'Completed a 2-minute breathing pause',date:new Date().toISOString(),kind:'breathing'});if(!save())return false;render();toast('Breathing pause complete. Take what helps and leave the rest.','success')}},1000);
  render();toast('Follow the circle gently. Normal, comfortable breathing is enough.');
 }
-function resetTimer(){clearInterval(focusTimer);focusTimer=null;running=false;remaining=duration*60;saveTimerState();render()}
-function stopTimer(){if(running||remaining!==duration*60){if(!confirm('End this session early? It will not be logged as a completed session.'))return}clearInterval(focusTimer);focusTimer=null;running=false;remaining=duration*60;saveTimerState();render();toast('Session ended. You can start again whenever you like.')}
-function setDuration(n){if(running){toast('Pause or reset the current session before changing duration.');return}duration=n;remaining=n*60;focusKind='Focus';render()}
+function resetTimer(){if(pendingFocusCompletion){toast('Save your finished session before resetting. Use Retry saving session.','error');return}clearInterval(focusTimer);focusTimer=null;running=false;remaining=duration*60;saveTimerState();render()}
+function stopTimer(){if(pendingFocusCompletion){toast('Save your finished session before ending it. Use Retry saving session.','error');return}if(running||remaining!==duration*60){if(!confirm('End this session early? It will not be logged as a completed session.'))return}clearInterval(focusTimer);focusTimer=null;running=false;remaining=duration*60;saveTimerState();render();toast('Session ended. You can start again whenever you like.')}
+function setDuration(n){if(pendingFocusCompletion){toast('Save your finished session before choosing a new duration.','error');return}if(running){toast('Pause or reset the current session before changing duration.');return}if(![2,5,15,25,45].includes(Number(n)))return;duration=Number(n);remaining=duration*60;focusKind='Focus';saveTimerState();render()}
 function resetDaily(){if(!confirm('Reset today’s care checkboxes? Your quests, XP, and focus history will stay untouched.'))return;data.habits.forEach(h=>h.done=false);data.lastReset=todayKey();if(!save())return false;render();toast('A fresh start, without erasing your progress.','success')}
 function dailyAutoReset(){const key=todayKey();if(data.lastReset!==key){data.habits.forEach(h=>h.done=false);data.lastReset=key;save()}}
 function exportBackup(){const blob=new Blob([JSON.stringify({app:'Rowanvale',product:'Rowanvale',brand:'Rowanvale',version:APP_VERSION,exportedAt:new Date().toISOString(),data},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`rowanvale-backup-${todayKey()}.json`;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000);toast('Backup exported. Keep it somewhere safe.','success')}
@@ -1892,9 +1900,17 @@ $('#sidebarToggle')?.addEventListener('click',()=>{hideUiHint();data.settings.si
 window.addEventListener('online',()=>{$('#connectionLabel').textContent='Online · local-first';toast('Connection restored.','success')});
 window.addEventListener('offline',()=>{$('#connectionLabel').textContent='Offline · local-first';toast('You are offline. Saved local features remain available.')});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden){if(running)tick();if(rolloverQuests()&&currentView==='quests')render()}});
-window.addEventListener('storage',e=>{if(e.key===STORAGE_KEY){data=loadData();render();toast('Rowanvale data changed in another tab.')}});
+window.addEventListener('storage',e=>{if(e.key===STORAGE_KEY){
+ // A successful external save is now the rollback baseline, too. Otherwise a
+ // later quota failure can resurrect an older workspace and overwrite this one.
+ storageLoadIssue=null;
+ data=loadData();committedData=clone(data);
+ librarySort=data.settings.librarySort||'recent';libraryView=data.settings.libraryView||'grid';
+ applySettings();render();showSaveState(!!storageLoadIssue);
+ toast(storageLoadIssue?'Saved data in another tab needs recovery. Open Data & Beta.':'Rowanvale data changed in another tab.',storageLoadIssue?'error':undefined);
+}});
 
-function restoreTimer(){try{const x=JSON.parse(sessionStorage.getItem('mindforge.timer')||'null');if(x){duration=Number(x.duration)||25;focusKind=x.focusKind||'Focus';running=!!x.running;endAt=Number(x.endAt)||0;remaining=running?Math.max(0,Math.ceil((endAt-Date.now())/1000)):Number(x.remaining)||duration*60;if(running&&remaining===0){completeTimer()}else if(running)focusTimer=setInterval(tick,250)}}catch{}}
+function restoreTimer(){try{const x=JSON.parse(sessionStorage.getItem('mindforge.timer')||'null');if(x){duration=[2,5,15,25,45].includes(Number(x.duration))?Number(x.duration):25;focusKind=x.focusKind==='Break'?'Break':'Focus';running=x.running===true;endAt=Number.isFinite(Number(x.endAt))?Number(x.endAt):0;const savedRemaining=Number(x.remaining);remaining=running?Math.max(0,Math.ceil((endAt-Date.now())/1000)):Number.isFinite(savedRemaining)?Math.max(0,Math.min(duration*60,savedRemaining)):duration*60;if(x.pendingFocusCompletion&&typeof x.pendingFocusCompletion.id==='string'&&[2,5,15,25,45].includes(x.pendingFocusCompletion.minutes)){pendingFocusCompletion={id:x.pendingFocusCompletion.id,date:x.pendingFocusCompletion.date,minutes:x.pendingFocusCompletion.minutes,kind:'Focus'};running=false;remaining=0;if(data.focusLog.some(e=>e.id===pendingFocusCompletion.id)){pendingFocusCompletion=null;saveTimerState()}}else if(running&&remaining===0){completeTimer()}else if(running)focusTimer=setInterval(tick,250)}}catch{}}
 function registerPWA(){if('serviceWorker' in navigator && /^https?:$/.test(location.protocol)){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').then(reg=>{reg.addEventListener('updatefound',()=>{const w=reg.installing;if(w)w.addEventListener('statechange',()=>{if(w.state==='installed'&&navigator.serviceWorker.controller)toast('A new app shell is ready. Open Help & Updates and refresh when convenient.','success')})});reg.update().catch(()=>{})}).catch(e=>console.warn('Service worker registration failed',e)))}}
 
 function initDeviceSignIn(){

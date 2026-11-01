@@ -1,14 +1,15 @@
 {
-  "version": "18.6.1",
+  "version": "18.6.2",
   "channel": "release-candidate",
-  "name": "Rowanvale 18.6.1 — Automatic Covers Everywhere",
-  "released": "2026-10-26",
-  "releaseNotes": "Automatic matched covers on every media page, shared artwork rendering, account-free sources and a fresh-build launcher.",
+  "name": "Rowanvale 18.6.2 — Everyday Polish",
+  "released": "2026-11-01",
+  "releaseNotes": "Pre-release: safer local saves, calmer effects, clearer media shelves, reliable guest voting and recoverable focus sessions.",
   "changes": [
-    "Automatic cover lookup for unsaved directories and saved media",
-    "Unified images across games, books, films, television, anime and profiles",
-    "Account-free matched Wikipedia/TVmaze sources",
-    "Persistent cover URL cache, source credits and protected custom choices",
-    "Launch current build without removing saved user data"
+    "Protect newer changes from another tab when storage fails",
+    "Reject damaged artwork backups before offering an unrestorable download",
+    "Calm View covers modern atmosphere effects",
+    "Clear media shelves and recoverable empty search results",
+    "Keep the selected movie-night guest while editing a plan",
+    "Preserve Quiet Room duration and retry a completed session after a failed save"
   ]
 }

@@ -21,3 +21,7 @@ body.signed-in.rv18-theme{background:var(--bg)!important;color:var(--text)!impor
 }
 
 @media(max-width:760px){body:has(.rv18-studio) #toastRegion{bottom:190px!important}}
+/* Keep editor/preview tabs below the shared sticky mobile header when scrolling. */
+@media(max-width:760px){
+ .rv18-mobile-tabs{top:64px;scroll-margin-top:76px}
+}

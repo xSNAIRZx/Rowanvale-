@@ -3,6 +3,7 @@
 @media(prefers-reduced-motion:reduce){.living184 *,.living-dialog *{scroll-behavior:auto;animation:none!important;transition:none!important}}
 
 .living-dialog [hidden],.living184 [hidden]{display:none!important}
+.living-shelves{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0 0 24px}.living-shelves .button{display:flex;flex-direction:column;align-items:flex-start;gap:5px;white-space:normal;text-align:left;padding:18px;border:1px solid var(--living-line);background:var(--living-soft);border-radius:14px;color:inherit}.living-shelves strong{font-size:27px;line-height:1.2;color:var(--accent,#d2ac7b)}.living-shelves span{font-size:12px;line-height:1.4}.living-shelves [aria-pressed=true]{border-color:var(--accent,#d2ac7b);box-shadow:inset 0 0 0 1px var(--accent,#d2ac7b)}@media(max-width:700px){.living-shelves{grid-template-columns:repeat(2,minmax(0,1fr))}.living-shelves .button{padding:14px}}
 /* Preserve legibility when the inherited shell switches to its light palette. */
 body.signed-in[data-appearance-resolved] .living-tabs button[aria-current="page"]{background:var(--accent,#d6a578)!important;color:var(--hb12-onaccent,#17282b)!important;border-color:var(--accent,#d6a578)!important}
 body.signed-in[data-appearance-resolved="light"] :is(#shellAccountToggle,#focusModeToggle,.hb11-context-tools button,.toast){background:var(--hb12-raised,#e6ece3)!important;color:var(--hb12-text,#203a35)!important;border-color:var(--hb12-border,#98ac9c)!important}

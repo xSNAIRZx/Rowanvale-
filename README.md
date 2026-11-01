@@ -1,41 +1,42 @@
-# Rowanvale 18.6.1 — Automatic Covers Everywhere
+# Rowanvale 18.6.2 — Everyday Polish
 
-> **PRE-RELEASE — 18.6.1 release candidate.** This build is for testing and feedback, not a stable production release. Back up your local workspace before upgrading.
+> **PRE-RELEASE / release candidate.** For testing and feedback. This is not a stable release.
 
-This fixes automatic artwork across Games & Media, Discover Games, Game Collection, Books Directory, Watch Room, Fan Lounge and Your Orbit. It preserves the 18.6 Personal Atlas, Reset Studio, all five media formats and existing local data.
+A reliability and usability pass on the latest Rowanvale: calmer effects, mobile Settings that stay usable while scrolling, clearer games/media shelves, correct movie-night guest voting, safer cross-tab saves and recoverable Quiet Room sessions. Existing artwork, profiles, local directories and data formats are preserved.
 
-## Launch the new build
+## Start or upgrade
 
-1. Export a backup from the previous app and stop its server.
-2. Use the supplied extracted Rowanvale_18.6.1 folder, or extract the complete new ZIP.
-3. Double-click START_ROWANVALE_WINDOWS.bat. A supported Node.js installation is required (technical minimum 18); no npm install is required to run the app.
-4. Keep the same browser profile and localhost:8080 address to retain its data. If needed, open http://localhost:8080/api/launch. Confirm version 18.6.1.
+1. In the previous app, export a JSON backup from Backups & Data; optionally export artwork too.
+2. Stop the previous Rowanvale server. Keep its folder as a rollback copy.
+3. Extract the entire new ZIP and double-click `START_ROWANVALE_WINDOWS.bat`. Node.js is required; no dependency installation is needed to use the app.
+4. Use the same browser profile and `http://localhost:8080/api/launch`. Confirm **18.6.2**. Saved browser data remains associated with this address.
 
-The launch endpoint bypasses Rowanvale's old cached shell while preserving your browser workspace and unrelated caches. Do not open index.html directly. Do not clear browser storage to upgrade. A previously running server must be stopped before launching this copy.
+Do not open index.html directly or clear browser storage to upgrade. If moving computers or browser profiles, import your exported backup. Local guest labels and shared night plans do not become hosted accounts; hosted social remains a separate future feature.
 
-## What changed
+## What's improved
 
-Opening a media page now starts matched cover lookups, including unsaved directory entries. Cached covers display immediately; first-time online matches arrive progressively with visible cards prioritized. You do not need to save each title, click Find artwork, sign into a cloud account or supply TMDB/IGDB keys for the built-in public sources.
+- Calm View suppresses the newer atmosphere effects and is available in Comfort settings.
+- Mobile Edit settings / Show preview tabs stay below the header.
+- Games & Media and Books Directory can be chosen as the starting page.
+- Current stories, future plans and favorites have count-bearing shelf shortcuts; paused items have a precise filter. Empty searches offer Clear filters.
+- Editing a movie-night lineup or duration preserves the selected voting guest.
+- Failed saves cannot roll back to a stale copy from before another tab's changes.
+- Artwork backup export catches damaged image files before offering an archive that cannot be restored.
+- Quiet Room remembers the selected duration and paused/completed state. A completed session that cannot save offers Retry saving session, including after reload in the same tab.
+- Downloaded issue reports identify the running version correctly.
 
-The previous loader missed directory cards and several legacy views, and the image validator rejected some valid cover hosts. A shared adapter now supplies every media renderer, source credits and protected custom choices. A separate cover setting defaults on; the older saved-item metadata backfill setting no longer blocks page covers.
+## Evidence and source
 
-Sources include verified Wikipedia work images and TVmaze, with configured existing providers as additional coverage. These are matched existing cover/poster images, not generated illustrations. A source may have no suitable image, a blocked network request or an ambiguous title. Those cards explain their status; the app does not silently substitute an unrelated work. Book art may be a historical first-edition title page, not the cover of your particular edition.
+- [Audit, fixes, QA and remaining risks](docs/AUDIT_AND_QA_18.6.2.md)
+- [Media product research](docs/MEDIA_POLISH_AUDIT.md)
+- `docs/evidence/18.6.2/` — current full regression results
+- `docs/evidence/audit-controls/` and `docs/evidence/audit-polish/` — targeted checks, control inventory and genuine before/after screenshots
+- `BUILD_MANIFEST.json` — release file checksums
 
-## Guides and evidence
-
-- docs/START_HERE_18.6.1.md — upgrade, settings and troubleshooting
-- docs/QA_REPORT_18.6.1.md — exact executed checks and limitations
-- docs/RELEASE_REPORT_18.6.1.md — root causes, implementation and source/privacy details
-- docs/evidence/18.6.1/ — browser captures and machine-readable results
-- BUILD_MANIFEST.json — per-file SHA-256 hashes in the release
-
-Earlier release documents remain historical. Their statements that basic movie/game artwork requires keys or saving each directory item are superseded by this release. The older account/provider setup guides still apply to optional richer metadata and private cloud sync.
+Earlier version reports are historical. An inventory of buttons is not proof every possible state or external integration has passed.
 
 ## Development
 
-Branch development/18.6.1-automatic-artwork, based on the verified 18.6 source. Plain JavaScript/CSS and the Node built-in server; no new runtime package. This release includes source, tests and reports. Git history remains in the development checkout and is not needed to run the ZIP.
+Plain JavaScript/CSS and a local Node server, with no new runtime dependencies. `npm ci` installs pinned development tools. Run `npm run check`, `npm test`, `npm run test:browser`, `npm run format:check`, and `npm run catalog:audit`. Browser checks use isolated temporary data; set `ROWANVALE_BROWSER` to Chrome or install Playwright Chromium. `npm run build` creates the distribution; `npm run test:live-covers` separately exercises public providers.
 
-Run npm ci for pinned development tools, npm run check for syntax/assets/vendor integrity, npm run format:check for maintained modules, npm test for Node/book checks, and npm run test:browser for the full regression suite. Set ROWANVALE_BROWSER to installed Chrome or install Playwright Chromium. npm run test:live-covers separately exercises genuine public services and image downloads; network availability can affect it. npm run catalog:audit audits bundled title structure; npm run build creates the distribution.
-
-There is no TypeScript/ESLint pipeline. No account secrets, personal workspace, node_modules or private cover cache is included.
-
+No personal workspace, account secrets, node_modules or private artwork cache is bundled.

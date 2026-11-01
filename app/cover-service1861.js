@@ -255,7 +255,7 @@ function createCoverService({
             headers: {
               Accept: "application/json",
               "User-Agent":
-                "Rowanvale/18.6.1 (personal desktop media library)" +
+                "Rowanvale/18.6.2 (personal desktop media library)" +
                 (env.ROWANVALE_CONTACT
                   ? " " + C.text(env.ROWANVALE_CONTACT, 100)
                   : ""),

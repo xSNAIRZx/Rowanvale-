@@ -1,7 +1,7 @@
 /* Rowanvale 15 mobile service worker.
    App-shell cache is versioned. New worker installs a fresh cache; old caches are
    removed only after activation. API/version checks bypass cache. */
-const CACHE_NAME = 'hearthbyte-play-connect-reset-v18.6.1-rowanvale';
+const CACHE_NAME = 'hearthbyte-play-connect-reset-v18.6.2-rowanvale';
 const APP_SHELL = [
   './',
   './index.html', './covers1861.js', './covers1861.css',

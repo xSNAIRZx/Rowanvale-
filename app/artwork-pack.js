@@ -65,7 +65,11 @@ function makeBackup(data,artDir){
  for(const g of data.backlog){for(const value of [g?.background_image,g?.metadata184?.artwork,g?.watch?.cover]){const id=String(value||'').match(URL_RE);if(id)refs.add(id[1]);}}
  const entries=[],files=[];let size=raw.length;
  for(const filename of refs){const name=path.join(artDir,filename);if(!fs.existsSync(name)||!fs.statSync(name).isFile())continue;
-  const bytes=fs.readFileSync(name);size+=bytes.length;if(bytes.length>3*1024*1024||size>LIMIT-1024*1024)throw Error('Selected artwork exceeds the 80 MB pack limit. Back up in smaller sets.');
+  const bytes=fs.readFileSync(name);
+  // Check the same image requirements as restore before reporting export success.
+  // Preserve damaged source bytes so recovery remains the user's choice.
+  if(!validImage(filename,bytes))throw Error('A saved cover is damaged. Export a JSON backup to protect your workspace, then repair the cover before making an artwork backup.');
+  size+=bytes.length;if(bytes.length>3*1024*1024||size>LIMIT-1024*1024)throw Error('Selected artwork exceeds the 80 MB pack limit. Back up in smaller sets.');
   const entry=`artwork/${filename}`;entries.push([entry,bytes]);files.push({path:entry,bytes:bytes.length,sha256:sha(bytes)});
  }
  const manifest={format:'rowanvale-private-artwork-pack',version:1,createdAt:new Date().toISOString(),dataSha256:sha(raw),includedCovers:files.length,referencedCovers:refs.size,files,notice:'Private, user-selected archive. Artwork belongs to its respective rightsholders; do not redistribute without permission.'};

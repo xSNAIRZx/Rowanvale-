@@ -34,3 +34,6 @@ body.signed-in.rv17calm-quiet #viewRoot :is(.rv-home-hero,.discover-hero)::befor
 body.signed-in.rv17calm-quiet #viewRoot .rv-home-welcome{padding:24px!important}
 body.signed-in.rv17calm-quiet #viewRoot .rv-home-welcome h2{font-size:clamp(26px,2.3vw,34px)!important}
 body.signed-in.rv17calm-quiet #viewRoot :is(.panel,.game-card,.rv-home-hero,.rv17-mode){box-shadow:none!important;backdrop-filter:none!important;animation:none!important;transition:none!important}
+/* The shared Calm preference also covers decorations introduced by Your World. */
+body.rv17calm-quiet #viewRoot .rv18-effects{display:none!important}
+body.rv17calm-quiet #viewRoot .rv18-effects i{animation:none!important}
