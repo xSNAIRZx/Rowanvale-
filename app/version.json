@@ -1,0 +1,14 @@
+{
+  "version": "18.6.1",
+  "channel": "release-candidate",
+  "name": "Rowanvale 18.6.1 — Automatic Covers Everywhere",
+  "released": "2026-10-26",
+  "releaseNotes": "Automatic matched covers on every media page, shared artwork rendering, account-free sources and a fresh-build launcher.",
+  "changes": [
+    "Automatic cover lookup for unsaved directories and saved media",
+    "Unified images across games, books, films, television, anime and profiles",
+    "Account-free matched Wikipedia/TVmaze sources",
+    "Persistent cover URL cache, source credits and protected custom choices",
+    "Launch current build without removing saved user data"
+  ]
+}
