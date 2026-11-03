@@ -1,49 +1,66 @@
-# Rowanvale Beta 19.3 — More of Your World
+# Rowanvale 19.3 — runnable private website starter
 
-> **BETA / PRE-RELEASE — 19.3.0.** This build is for testing and feedback, not a stable release.
+This package contains the actual Beta 19.3 app plus a working hosted entry point, not only a prompt. The visual redesign is still pending your direction choice. For an AI with limited file access, start with [AI_HANDOFF.txt](AI_HANDOFF.txt), then this README and [NEXT_PROJECT_BRIEF.md](NEXT_PROJECT_BRIEF.md). The AI can request individual source files as needed; no ZIP is required.
 
-A more personal, organized and useful local home for games, films, television, anime and books. Built on 18.6.2, preserving its repairs, profiles, artwork, directories and saved data.
+## What is implemented
 
-## New in Beta 19.3
+- `hosting/server.cjs` starts the original application server privately on loopback and exposes an authenticated website gateway. Host and origin checks remain enforced. Verified browser origins are translated for the existing local intent contract; callers cannot bypass that contract by supplying an arbitrary Origin.
+- The complete existing app and original catalog, barcode, artwork, ZIP and workspace handlers are retained. No framework rewrite or server-feature mock was substituted.
+- Dockerfile, Compose persistent volume, an environment template and a Caddy HTTPS example are provided. No new runtime package is required.
+- A browser-visible notice distinguishes browser-local collections from privately hosted artwork and explains backup migration.
 
-- **Trust repairs:** journals save to the right records; history no longer silently loses older entries; Repeat selects the session displayed; search opens the correct saved title.
-- **Reviewed imports:** local Rowanvale JSON and Goodreads/Letterboxd/generic CSV, conservative duplicate review, edition-aware matching, preserved paused/dropped statuses, and undo for unchanged imported records.
-- **Movement:** recoverable structured workouts with sets, reps, weights, kg/lb, prior values, routines and an optional rest timer. Food entries can be corrected; unknown nutrients remain unknown.
-- **Wellbeing:** searchable private history, date/type filters, edits, deletion/undo and selected export. Custom Quiet Room durations and recoverable paused sessions.
-- **Media:** dated diaries, episode/season history and rewatches, book editions/copies/rereads. Group plans record guest access and setup needs.
+**Audience:** one owner, one private server. HTTP Basic owner sign-in protects every app/API/artwork path; `/healthz` exposes only a minimal liveness result. No public visitor shares the owner's artwork cache. Do not distribute the owner credential to unrelated users or remove the gate to make a public multi-user service. Add proper independent user identities, authorization and storage namespaces before that expansion. The current account/profile UI still refers to browser-local app identities and optional configured cloud accounts; it does not replace the gateway's access boundary.
 
-See [Beta 19.3 verification and limits](docs/QA_BETA_193.md), [movement guide](docs/TRAINING_193.md), and [import guide](docs/IMPORT_193.md).
+## Run locally
 
-## Retained from Beta 19.0
+Use a currently supported Node LTS (the container uses Node 24). Development tools follow package-lock.json.
 
-- **Workspace presets:** coordinated Quiet focus, Play & discover and Evening unwind setups; save up to 12 of your own. Compare saved versus draft appearance before committing. Share validated visual/layout preferences without identity, uploaded media or private records.
-- **Smart Shelves:** save up to 20 named searches with format, status and sort. Matching titles join automatically as your library changes. Rename/remove a shelf without deleting stories.
-- **Library views:** cover grid, detailed list and compact list, remembered across visits and included in backups. Planned games stay on For later after reload.
-- **Night planning:** review a vote-based lineup that fits known durations and breaks; No votes are excluded and missing votes remain visible. Accept explicitly, then export a calendar file without guest identities or individual ballots.
-- **Data Health:** inspect real saved-workspace readability, browser storage estimates, active-worker offline cache verification, and clearly labeled backup-download records.
+PowerShell, from this directory:
 
-Every feature above works locally. First-time external artwork/metadata and optional cloud services still require a network. Night plans remain local/manual sharing; this is not hosted friend accounts or synchronized streaming.
+```powershell
+$env:PUBLIC_URL = 'http://localhost:8080'
+$env:PORT = '8080'
+$env:ROWANVALE_WEB_USER = 'owner'
+$env:ROWANVALE_WEB_PASSWORD = Read-Host 'Choose a unique owner password of at least 20 characters' -MaskInput
+$env:ROWANVALE_DATA_DIR = Join-Path $env:LOCALAPPDATA 'RowanvaleWebsite'
+npm run start:hosted
+```
 
-## Launch or upgrade
+Open `http://localhost:8080` and enter the owner credentials in the browser's standard sign-in prompt. The Node entry point reads environment variables; it does not load `.env.hosted` automatically. Compose loads that file for container deployment. Older PowerShell versions without `-MaskInput` should use the host's secret manager or another secure environment-entry method.
 
-1. Export a JSON backup from the old app; optionally export artwork too.
-2. Stop the previous server and retain its folder.
-3. Extract the full ZIP and run **START_ROWANVALE_WINDOWS.bat**. Node.js is required; no npm install is needed to run Rowanvale.
-4. Use the same browser profile at **http://localhost:8080/api/launch**. Confirm **19.3.0 / Beta**.
+The original desktop launcher remains available. Do not run the desktop and website servers on the same public port simultaneously. Browser data is separate for localhost, 127.0.0.1, different ports and the final HTTPS domain.
 
-Do not open index.html directly or clear browser storage. Moving browsers/computers requires importing your backup. The old release is preserved for rollback.
+## Deploy on a Node/container host
 
-## Guides
+1. Copy `.env.hosted.example` to `.env.hosted` and fill in PUBLIC_URL, owner username and a unique password of at least 20 characters. Never commit that filled file. Provider credentials are optional host secrets; unavailable providers must remain visibly unavailable rather than pretending to work.
+2. Set PUBLIC_URL to the exact final HTTPS origin, including a nonstandard port if used. Remote HTTP origins are rejected. Terminate TLS at a trusted reverse proxy and preserve the original Host header. Forwarded headers are not trusted to establish origin or identity.
+3. Run `docker compose up -d --build` on the server. Compose binds the container only to host loopback. The named volume `rowanvale-private` retains artwork across ordinary container replacement. Do not use `docker compose down -v` unless intentionally deleting that volume after a verified backup.
+4. Adapt `Caddyfile.example` to the real DNS name and run Caddy on the host, or use the hosting provider's equivalent HTTPS ingress. Only the gateway port is exposed; the original backend uses a random loopback port inside the process/container.
+5. If using a managed container host, configure its persistent volume at `/data/rowanvale`, its PORT convention, PUBLIC_URL, owner credentials and HTTPS ingress. A restartable container filesystem without a persistent volume is insufficient. Verify volume ownership permits the container's non-root `node` user to write.
+6. Check `/healthz` at the final origin, then verify app sign-in, metadata lookup, selected-artwork caching, ZIP export/import and offline restart. Live provider requests depend on their availability, terms and any required owner-supplied API keys.
 
-- [What changed, what is still missing, and the next priorities](docs/BETA_19_PRODUCT_DIRECTION.md)
-- [Verification and limitations](docs/QA_BETA_19.md)
-- [Smart Shelves and library views](docs/LIBRARY_19.md)
-- [Data Health semantics and performance observations](docs/DATA_HEALTH_19.md)
-- `docs/evidence/19.3.0/` contains actual browser captures and machine-readable results.
-- `BUILD_MANIFEST.json` in the release lists per-file SHA-256 checksums.
+No hosting provider account, domain, TLS certificate or credentials is included. This package was not deployed. Docker image construction and production HTTPS must be verified on the chosen host. It cannot be deployed unchanged as a static GitHub Pages site or as a Worker-only site; it needs Node and persistent private storage. Do not upload `.env.hosted`, runtime storage or private backups to GitHub.
 
-Older reports describe their own releases. No claim is made that every legacy control, device or external integration is certified.
+## Move existing data
 
-## Development
+On the old desktop app, export a JSON backup and, if needed, the private artwork ZIP. Keep those files and the old build. On the final website, use the existing Data & Beta import controls. Verify title counts, paused/dropped status, journal dates, workouts and selected covers. A hosted URL does not automatically receive localhost storage. Provider keys should be configured independently on the host, never put into a browser backup.
 
-Plain JavaScript/CSS, local Node server, no new runtime dependency. `npm ci` installs pinned development tools. `npm run check`, `npm run test:browser`, `npm run format:check`, `npm run catalog:audit`, and `npm run build` validate and package the app. Set ROWANVALE_BROWSER to Chrome or install Playwright Chromium for browser tests. Tests use synthetic workspaces and temporary server data, never your real browser profile.
+Collections, journals and most profile settings stay in browser localStorage by default; the private host retains artwork. Workspace ZIPs are generated on request, not a newly introduced cloud autosave system. Optional Supabase sync keeps its existing explicit setup; website hosting alone does not create cross-device sync or a social account service.
+
+## Verification
+
+```text
+npm ci
+npm run test:hosting
+npm run test:hosting:browser
+npm run check
+```
+
+Hosting tests use a temporary synthetic workspace and the real Node backend. They cover unauthenticated/wrong-owner rejection, host allowlist, origin and intent checks, static/server-source boundaries, real artwork ZIP export/import and feature assets. Browser checks use installed Chrome by default; set ROWANVALE_BROWSER to another compatible installed browser if needed. They exercise actual Basic sign-in, main views, same-origin resolver POST, mobile width and offline PWA restart with retained data. See hosting/BROWSER_RESULTS.json for observed checks and limits. Prior baseline evidence in docs describes the earlier desktop app and is not a fresh certification of this hosted package.
+
+## Rollback and remaining work
+
+Keep the unchanged Beta 19.3 desktop build and the previous server image. Export browser data and the artwork ZIP before upgrades. To roll back, run the prior image with the same persistent volume only if its data format remains compatible; otherwise restore the verified exported backup into an isolated prior volume. Keep the final website origin stable to retain browser storage.
+
+The other AI should now: configure the actual host and secrets; verify real HTTPS, provider calls and persistent-volume restart; then follow NEXT_PROJECT_BRIEF.md through the design-direction checkpoint. Public multi-user accounts require a separate isolation design. The gateway password must stay private; Basic authentication uses browser-managed sessions and does not provide an in-app logout/account-management system. On shared computers, use a separate browser profile/private session and explicitly close it after use. Reassess this authentication design before any wider release.
+

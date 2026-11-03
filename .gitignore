@@ -25,3 +25,7 @@ docs/evidence/18.6.1/*failure*.png
 
 /*-test.log
 docs/evidence/18.6.2/*failure*.png
+.env.hosted
+.env.*.local
+runtime/
+*.log
