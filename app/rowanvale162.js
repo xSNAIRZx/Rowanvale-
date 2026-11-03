@@ -42,9 +42,8 @@ const RV162=(()=>{
    for(const x of foods){const key=String(x.name||'').toLowerCase().trim();if(key&&!seen.has(key)){seen.add(key);quick.push(x)}if(quick.length>=5)break;}
    const anchor=root.querySelector('.hb10-nutrition .hb-nutri-heading');
    if(anchor&&quick.length&&!root.querySelector('.rv162-food-shortcuts')){
-    anchor.insertAdjacentHTML('afterend',`<section class="panel panel-pad rv162-food-shortcuts"><div><span class="eyebrow">FOOD DIARY / QUICK ADD</span><h3>Meals you've logged before</h3><p class="small-note">Copy an earlier entry to the selected diary date. All amounts can be edited by replacing that entry.</p></div><div class="rv162-actions">${quick.map(x=>`<button class="button button-quiet" data-action="rv162-food-repeat" data-id="${esc(x.id)}">+ ${esc(x.name)}</button>`).join('')}</div></section>`);
+    anchor.insertAdjacentHTML('afterend',`<section class="panel panel-pad rv162-food-shortcuts"><div><span class="eyebrow">FOOD DIARY / QUICK ADD</span><h3>Meals you've logged before</h3><p class="small-note">Copy an earlier entry to the selected diary date. Edit amounts directly in the diary.</p></div><div class="rv162-actions">${quick.map(x=>`<button class="button button-quiet" data-action="rv162-food-repeat" data-id="${esc(x.id)}">+ ${esc(x.name)}</button>`).join('')}</div></section>`);
    }
-   root.querySelectorAll('.fitness-log-row').forEach((row,i)=>{const log=(data.fitnessLogs||[])[i];if(!log||row.querySelector('.rv162-duplicate'))return;const btn=document.createElement('button');btn.type='button';btn.className='button button-quiet rv162-duplicate';btn.textContent='Repeat';btn.title='Copy this session to today (you can change it later)';btn.dataset.action='rv162-fitness-repeat';btn.dataset.id=log.id;row.append(btn)});
   }
  }
  function decorateLibrary(root,data){if(!root)return;

@@ -15,6 +15,9 @@
       const yes = votes.filter((v) => v === "yes").length,
         maybe = votes.filter((v) => v === "maybe").length,
         no = votes.filter((v) => v === "no").length;
+      const access = [...guests].map(
+        (id) => c.compatibility?.access?.[id] || "unknown",
+      );
       return {
         index,
         title: String(c.title || ""),
@@ -22,6 +25,8 @@
         yes,
         maybe,
         no,
+        accessBlocked: access.some((v) => v === "no"),
+        accessUnknown: access.filter((v) => v !== "yes" && v !== "no").length,
         score: yes * 2 + maybe,
         voted: votes.length,
         missing: Math.max(0, guests.size - votes.length),
@@ -40,7 +45,14 @@
       gap = Math.max(0, Number(plan.breakMinutes) || 0);
     for (const c of ranked) {
       const cost = c.minutes + (selected.length ? gap : 0);
-      if (c.score > 0 && c.no === 0 && c.minutes > 0 && used + cost <= budget) {
+      if (
+        c.score > 0 &&
+        c.no === 0 &&
+        !c.accessBlocked &&
+        (!plan.requireConfirmedAccess || c.accessUnknown === 0) &&
+        c.minutes > 0 &&
+        used + cost <= budget
+      ) {
         selected.push(c.index);
         used += cost;
       }

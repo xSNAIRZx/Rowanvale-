@@ -146,7 +146,8 @@ const RVReset = (() => {
               ? `<div class="reset186-subhead"><span class="reset186-kicker">PRIVATE FIELD NOTES</span><h2>Give the thought somewhere to land.</h2><p>Your words stay in your private workspace. They are included if you choose private cloud sync; shared profiles never include them.</p></div><div class="reset186-reflections">${journal}${take(root, ".reset-plan-card")}${take(root, ".thought-untangler")}${after}</div>`
               : tab === "tools"
                 ? `<div class="reset186-subhead"><span class="reset186-kicker">SMALL WAYS TO CARE</span><h2>Make the next hour kinder.</h2></div>${take(root, ".reset-lane-studio")}${take(root, ".wellness-game-bridge")}${take(root, ".game-care-plan")}${byTitle(root, "Tiny care menu")}<div class="reset186-legacy-mini">${take(root, ".kindness-tool")}${take(root, ".body-tool")}</div>`
-                : `<div class="reset186-subhead"><span class="reset186-kicker">A RECORD, NEVER A SCORE</span><h2>The moments you made room for.</h2><p>Missing days are simply days. This is your own record, with no streak to protect.</p></div>${take(root, ".wellness-history")}<div class="reset186-history"><h3>Recent care moments</h3>${recent.map((s) => `<article><span aria-hidden="true">✦</span><div><b>${E(s.title || "Care moment")}</b><small>${E(String(s.date || "").slice(0, 10))}${s.seconds ? " · " + s.seconds + " seconds" : ""}</small></div></article>`).join("") || "<p>No saved moments yet. You can rest without logging anything.</p>"}${btn("Clear mood & care history", "clear-history")}</div>`;
+                : RVWellbeing193.history(d) +
+                  `<div class="reset186-history">${btn("Clear mood & care history", "clear-history")}</div>`;
     return `<section class="reset186" aria-label="Reset Studio"><header class="reset186-header"><div><span class="reset186-kicker">ROWANVALE / A QUIETER CORNER</span><h1>Reset Studio<span>Make space for yourself.</span></h1></div><span class="reset186-private">PRIVATE · OPTIONAL · YOUR PACE</span></header><nav class="reset186-tabs" aria-label="Reset Studio areas">${tabs.map(([id, label]) => btn(label, "tab", id, `aria-current="${tab === id ? "page" : "false"}"`)).join("")}</nav><div class="reset186-body">${body}</div><footer>Everyday rest and reflection. Adapt anything, skip anything. <button type="button" class="subtle-link" data-view="resources">Explore support guides ↗</button></footer></section>`;
   }
   function showError(message) {
@@ -340,7 +341,6 @@ const RVReset = (() => {
         seconds,
         date: new Date().toISOString(),
       });
-      d.wellnessSessions = d.wellnessSessions.slice(0, 200);
     });
   }
   function action(a, id) {
@@ -463,7 +463,11 @@ const RVReset = (() => {
     }
   });
   document.addEventListener("input", (e) => {
-    if (e.target.closest(".reset186") && e.target.id)
+    if (
+      e.target.closest(".reset186") &&
+      e.target.id &&
+      !e.target.id.startsWith("wb193-")
+    )
       drafts[e.target.id] = e.target.value;
   });
   document.addEventListener(
@@ -485,13 +489,30 @@ const RVReset = (() => {
   return {
     bind(c) {
       ctx = c;
+      RVWellbeing193.bind(c);
     },
     view,
     mount() {
+      RVWellbeing193.mount();
       for (const [id, value] of Object.entries(drafts)) {
         const el = document.getElementById(id);
         if (el?.closest(".reset186")) el.value = value;
       }
+    },
+    historyChanged(row) {
+      if (row?.source !== "reflections") return;
+      const ids = {
+        text: "reflectionText",
+        hard: "resetPlanHard",
+        wait: "resetPlanWait",
+        support: "resetPlanSupport",
+        thought: "reframeThought",
+        evidence: "reframeEvidence",
+        alternative: "reframeAlternative",
+      };
+      for (const [key, id] of Object.entries(ids))
+        if (Object.hasOwn(row.record, key) && drafts[id] === row.record[key])
+          delete drafts[id];
     },
     show(id) {
       tab = id;
